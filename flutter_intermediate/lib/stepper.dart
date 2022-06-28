@@ -29,7 +29,9 @@ class _State extends State<MyApp> {
       _stepList.add(Step(
           isActive: true,
           title: Text("Title of step ${i}"),
-          content: Text("Content of step ${i}")));
+          content: Text(
+            "Content of step ${i}",
+          )));
     }
   }
 
