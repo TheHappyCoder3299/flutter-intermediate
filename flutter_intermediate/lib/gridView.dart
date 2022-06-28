@@ -1,74 +1,74 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
-    debugShowCheckedModeBanner: false,
+  runApp(new MaterialApp(
+    home: new MyApp(),
   ));
 }
 
 class MyApp extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _State createState() => new _State();
 }
 
-class MyTile {
-  Color? color;
-  String? title;
-  MyTile({this.color: Colors.amberAccent, this.title: "default title"});
+class Area {
+  int index;
+  String name;
+  Color color;
+  Area({this.index: -1, this.name: 'Area', this.color: Colors.lightBlueAccent});
 }
 
 class _State extends State<MyApp> {
-  int noOfTiles = 0;
-  List<MyTile>? _myTileList;
+  int _location = 0;
+  List<Area> _areas = [];
+
   @override
   void initState() {
-    // TODO: implement initState
-    //populating our _myTileList
-    _myTileList = [];
-    noOfTiles = 16;
-    for (int i = 0; i < noOfTiles; i++) {
-      _myTileList?.add(new MyTile(title: "${i}"));
+    for (int i = 0; i < 16; i++) {
+      _areas.add(new Area(index: i, name: 'Area ${i}'));
     }
+
+    var rng = new Random();
+    _location = rng.nextInt(_areas.length);
+  }
+
+  Widget _generate(int index) {
+    return new GridTile(
+        child: new Container(
+      padding: new EdgeInsets.all(5.0),
+      child: new RaisedButton(
+        onPressed: () => _onPressed(index),
+        color: _areas[index].color,
+        child: new Text(_areas[index].name, textAlign: TextAlign.center),
+      ),
+    ));
+  }
+
+  void _onPressed(int index) {
+    setState(() {
+      if (index == _location) {
+        _areas[index].color = Colors.green;
+        //You won
+      } else {
+        _areas[index].color = Colors.red;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text("Anwit's flutter app")),
-      body: Container(
-        padding: EdgeInsets.all(32.0),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Text("Welcome to treasure hunt"),
-              GridView.count(
-                crossAxisCount: 4,
-                children: List<Widget>.generate(
-                    noOfTiles, (index) => _createGridTile(index)),
-              )
-            ],
-          ),
-        ),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Name here'),
       ),
-    );
-  }
-
-  Widget _createGridTile(int index) {
-    return Container(
-      child: GridTile(
-          child: Container(
-        child: ElevatedButton(
-          // style: ButtonStyle(overlayColor: ),
-          onPressed: () =>
-              setState(() => _myTileList?[index].color = Colors.red),
-          child: Text("Child of elevated button"),
-        ),
-        padding: EdgeInsets.all(15.0),
-      )),
+      body: new Container(
+          padding: new EdgeInsets.all(10.0),
+          child: new Center(
+              child: new GridView.count(
+            crossAxisCount: 4,
+            children: new List<Widget>.generate(16, _generate),
+          ))),
     );
   }
 }
